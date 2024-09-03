@@ -1,0 +1,39 @@
+{% extends 'base.html' %} {% block content %}
+
+<section class="hero is-fullheight">
+  <div class="hero-body">
+    <div class="container has-text-centered">
+      <div class="box">
+        <h1 class="title">Welcome to ChatApp</h1>
+        <p class="subtitle">Enter your display name to get started:</p>
+        <div class="field">
+          <div class="control">
+            <input id="displayNameInput" class="input" type="text" placeholder="Your display name" />
+          </div>
+        </div>
+        <button class="button is-primary" id="joinChatButton">Join Chat</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const displayName = localStorage.getItem("displayName");
+    if (displayName) {
+      window.location.href = "/channels";
+    }
+    document
+      .getElementById("joinChatButton")
+      .addEventListener("click", function () {
+        const displayName = document.getElementById("displayNameInput").value;
+        if (displayName !== "") {
+          localStorage.setItem("displayName", displayName);
+          window.location.href = "/channels";
+        } else {
+          alert("Please enter a display name.");
+        }
+      });
+  });
+</script>
+{% endblock %}

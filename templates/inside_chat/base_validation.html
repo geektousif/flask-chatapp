@@ -1,0 +1,13 @@
+{% extends 'base.html' %} {% block content %} {% block protected_content %} {%
+endblock %}
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const displayName = localStorage.getItem("displayName");
+    if (!displayName) {
+      window.location.href = "/chat/start";
+    }
+  });
+</script>
+
+{% endblock %}

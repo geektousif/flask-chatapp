@@ -1,0 +1,74 @@
+{% extends 'inside_chat/base_validation.html' %} {% block protected_content %}
+<section class="section">
+  <div class="container">
+    <h1 class="title">Channels</h1>
+    <div class="box">
+      <div class="field has-addons">
+        <div class="control is-expanded">
+          <input id="newChannelInput" class="input" type="text" placeholder="New Channel Name" />
+        </div>
+        <div class="control">
+          <button class="button is-primary" id="createChannelButton">
+            Create
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="box">
+      <h2 class="subtitle">Available Channels</h2>
+      <ul id="channelList">
+        {% for channel in channels %}
+        <li>
+          <a href="/channels/{{ channel }}" class="channel-link"># {{ channel }}</a>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</section>
+
+<script>
+  document
+    .getElementById("createChannelButton")
+    .addEventListener("click", createChannel);
+  document
+    .getElementById("newChannelInput")
+    .addEventListener("keyup", function (event) {
+      if (event.key === "Enter") {
+        createChannel();
+      }
+    });
+
+  function createChannel() {
+    const newChannelName = document
+      .getElementById("newChannelInput")
+      .value.trim();
+    if (newChannelName !== "") {
+      fetch("/create-channel", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            channel_name: newChannelName
+          }),
+        })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success) {
+            const channelList = document.getElementById("channelList");
+            const newChannel = document.createElement("li");
+            newChannel.innerHTML =
+              `<a href="/channels/${newChannelName.toLowerCase()}" class="channel-link"># ${newChannelName}</a>`;
+            channelList.appendChild(newChannel);
+            document.getElementById("newChannelInput").value = "";
+          } else {
+            alert(data.error);
+          }
+        });
+    } else {
+      alert("Please enter a channel name.");
+    }
+  }
+</script>
+{% endblock %}
